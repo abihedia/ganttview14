@@ -1,0 +1,28 @@
+<odoo>
+    <data>
+        <!-- inherit a form view -->
+        <record model="ir.ui.view" id="account_move_form_inherit">
+            <field name="name">account.move.form.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group/div[@name='journal_div']" position="after">
+                    <label for="amount_market"/>
+                    <div name="amount_market" class="d-flex">
+                        <field name="amount_market"/>
+
+                    </div>
+                    <field name="per_advance_section"/>
+<!--                    <field name="per_advance_note"/>-->
+
+
+                </xpath >
+                <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="after">
+                    <field name="categ_id"/>
+                    <field name="per_advance_product"/>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
