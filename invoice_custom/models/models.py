@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from appdirs import unicode
 from odoo import models, fields, api, _, tools
+from decimal import Decimal
 
 
 #
@@ -24,14 +25,13 @@ class AccountMove(models.Model):
 
     # ajout champs amount_market dans le modele facturation
     amount_market = fields.Monetary(string='Montant Marché', readonly=True, compute='_get_amount_market_sale')
-    per_advance_section = fields.Char(string="% site section", compute='_get_per_advance_categ')
-    per_advance_note = fields.Char(string="% site note", compute='_get_per_advance_categ')
+    advance = fields.Boolean(string="% site section", compute='_get_per_advance_categ', default=False)
 
     def _get_amount_market_sale(self):
         """
         Calculer Montant Marché par client.
         """
-        sale_ids = self.env['sale.order'].search([('partner_id', '=', self.partner_id.id)])
+        sale_ids = self.env['sale.order'].search([('partner_id', '=', self.partner_id.id), ('state', '=', 'sale')])
         amount_market = 0.0
         for par in sale_ids:
             amount_market += par.amount_total
@@ -42,88 +42,36 @@ class AccountMove(models.Model):
     @api.depends('invoice_line_ids')
     def _get_per_advance_categ(self):
         """
-        Calculer avancement par section.
+        Calculer advance.
         """
-        # section
-        data_section = []
-        data_note = []
-        section = ''
-        note = ''
+
+        # *********************************
+        av_line = 0.0
+        comp_line = 0
+        av_section = 0.0
+        comp_section = 0
+        # av_note = 0.0
         for line in self.invoice_line_ids:
-            st_section = self.env['product.category'].search([('id', '=', line.categ_id.id)])
-            data_section.append(st_section.id)
-        # supprimer les doublons data_section
-        lwd = []
-        for i in data_section:
-            if i not in lwd: lwd.append(i)
 
+            if line.display_type != 'line_section' and line.display_type != 'line_note':
+                av_line += line.per_advance_product
+                comp_line += 1
+            if line.display_type == 'line_section':
+                if comp_line != 0:
+                    av_section += av_line / comp_line
+                    av_line -= av_line
+                    comp_line = 0
+                    comp_section += 1
 
-        # note
-        for line in self.invoice_line_ids:
-            st_note = self.env['product.category'].search([('id', '=', line.categ_id.parent_id.id)])
-            data_note.append(st_note.id)
-        print("data_note",data_note)
-        # supprimer les doublons data_note
-        lwd_note = []
-        for i in data_note:
-            if i not in lwd_note: lwd_note.append(i)
-        print("data note**********", lwd_note)
-        for num in lwd:
-            avance_per_section = 0.0
-            avancement_section = 0.0
-            compteur_section = 0
-            section_name = ""
-            note_id = 0
-            note_name = ""
+            if line.display_type == 'line_note':
+                if comp_section != 0:
+                    av_note = av_section / comp_section
+                    av_section -= av_section
+                    comp_section = 0
+                    line.write({'per_advance_product': av_note
+                                })
 
-
-
-            for line in self.invoice_line_ids:
-
-                if line.categ_id.id != num:
-                    continue
-                else:
-                    avancement_section += line.per_advance_product
-                    compteur_section += 1
-                    section_name = line.categ_id.name
-                    note_name = line.categ_id.parent_id.name
-                    note_id = line.categ_id.parent_id.id
-                    avance_per_section = avancement_section / compteur_section
-            # self.env['section.note'].create({
-            #         'type': 'section',
-            #         'section_name': section_name,
-            #         'categ_id': 'num',
-            #         'avdvanced_per_section': avance_per_section,
-            #     })
-            # section += "section: " + section_name + " avancement: " + str("%.2f" % avance_per_section) + "\n"
-            if section_name:
-                section += "section: %s avancement: %8.2s \n" % (section_name , avance_per_section)
-            avancement_note = 0.0
-            compteur_note = 0
-            for num_note in lwd_note:
-                avance_per_note = 0
-
-                print("note_id",note_id)
-                print("num_note",num_note)
-
-                if note_id != num_note:
-                    continue
-                # note_id==num_note
-                else:
-                    avancement_note += avance_per_section
-                    compteur_note += 1
-                    note_name = note_name
-                    avance_per_note = avancement_note / compteur_note
-                    print("avancement_note", avancement_note)
-                    print("compteur_note", compteur_note)
-                    print("note_name", note_name)
-                    print("avance_per_note", avance_per_note)
-                # note += "note: " + note_name + " avancement: " + str("%.2f" % avance_per_note) + "\n"
-
-        self.per_advance_note = note
-
-        self.per_advance_section = section
-
+        self.advance = True
 
 
 class AccountMoveLine(models.Model):
@@ -132,4 +80,3 @@ class AccountMoveLine(models.Model):
 
     per_advance_product = fields.Float(string="% site", )
     categ_id = fields.Many2one(related="product_id.categ_id")
-

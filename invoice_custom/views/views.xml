@@ -10,16 +10,23 @@
                     <label for="amount_market"/>
                     <div name="amount_market" class="d-flex">
                         <field name="amount_market"/>
-
                     </div>
-                    <field name="per_advance_section"/>
-<!--                    <field name="per_advance_note"/>-->
+                    <field name="advance" invisible="1"/>
 
-
-                </xpath >
-                <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='account_id']" position="after">
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='account_id']"
+                       position="after">
                     <field name="categ_id"/>
                     <field name="per_advance_product"/>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='sequence']"
+                       position="attributes">
+                    <attributes name="invisible">1</attributes>
+                </xpath>
+                <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/form/sheet/field[@name='name']"
+                       position="after">
+                    <label for="per_advance_product" attrs="{'invisible': [('display_type', '=', 'line_section')]}"/>
+                    <field name="per_advance_product" attrs="{'invisible': [('display_type', '=', 'line_section')]}"/>
                 </xpath>
             </field>
         </record>
