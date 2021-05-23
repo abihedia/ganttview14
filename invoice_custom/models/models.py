@@ -51,27 +51,30 @@ class AccountMove(models.Model):
         av_section = 0.0
         comp_section = 0
         # av_note = 0.0
-        for line in self.invoice_line_ids:
+        if self.id:
+            for line in reversed(self.invoice_line_ids):
 
-            if line.display_type != 'line_section' and line.display_type != 'line_note':
-                av_line += line.per_advance_product
-                comp_line += 1
-            if line.display_type == 'line_section':
-                if comp_line != 0:
-                    av_section += av_line / comp_line
-                    av_line -= av_line
-                    comp_line = 0
-                    comp_section += 1
+                if line.display_type != 'line_section' and line.display_type != 'line_note':
+                    av_line += line.per_advance_product
+                    comp_line += 1
+                if line.display_type == 'line_section':
+                    if comp_line != 0:
+                        av_section += av_line / comp_line
+                        av_line -= av_line
+                        comp_line = 0
+                        comp_section += 1
 
-            if line.display_type == 'line_note':
-                if comp_section != 0:
-                    av_note = av_section / comp_section
-                    av_section -= av_section
-                    comp_section = 0
-                    line.write({'per_advance_product': av_note
-                                })
+                if line.display_type == 'line_note':
+                    if comp_section != 0:
+                        av_note = av_section / comp_section
+                        av_section -= av_section
+                        comp_section = 0
+                        line.write({'per_advance_product': av_note
+                                    })
+            #     line.write({'sequence': line.categ_id.id})
+            #     print("*********", line.sequence)
 
-        self.advance = True
+            self.advance = True
 
 
 class AccountMoveLine(models.Model):
