@@ -31,6 +31,7 @@ class AccountMove(models.Model):
         """
 
         # *********************************
+        self.advance = False
         av_line = 0.0
         comp_line = 0
         av_section = 0.0
