@@ -17,7 +17,7 @@
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='account_id']"
                        position="after">
                     <field name="categ_id"/>
-                    <field name="per_advance_product"/>
+<!--                    <field name="per_advance_note" />-->
                 </xpath>
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='sequence']"
                        position="attributes">
@@ -25,8 +25,8 @@
                 </xpath>
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/form/sheet/field[@name='name']"
                        position="after">
-                    <label for="per_advance_product" attrs="{'invisible': [('display_type', '=', 'line_section')]}"/>
-                    <field name="per_advance_product" attrs="{'invisible': [('display_type', '=', 'line_section')]}"/>
+                    <label for="per_advance_note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
+                    <field name="per_advance_note" attrs="{'invisible': [('display_type', '=', 'line_note')]}"/>
                 </xpath>
             </field>
         </record>
