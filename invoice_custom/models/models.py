@@ -41,7 +41,8 @@ class AccountMove(models.Model):
         for line in reversed(self.invoice_line_ids):
 
             if line.display_type != 'line_section' and line.display_type != 'line_note':
-                av_line += line.per_advance_product
+                # av_line += line.per_advance_product
+                av_line += line.x_studio_pourcentage_situation
                 comp_line += 1
             if line.display_type == 'line_section':
                 if comp_line != 0:
@@ -55,7 +56,7 @@ class AccountMove(models.Model):
                     av_note = av_section / comp_section
                     av_section -= av_section
                     comp_section = 0
-                    line.write({'per_advance_product': av_note
+                    line.write({'per_advance_note': av_note
                                 })
 
         self.advance = True
@@ -65,5 +66,5 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
     _description = "Journal Item"
 
-    per_advance_product = fields.Float(string="% site", )
+    per_advance_note = fields.Float(string="% site", )
     categ_id = fields.Many2one(related="product_id.categ_id")
