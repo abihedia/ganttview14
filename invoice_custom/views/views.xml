@@ -12,7 +12,6 @@
                         <field name="amount_market"/>
                     </div>
                     <field name="advance" invisible="1"/>
-
                 </xpath>
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='account_id']"
                        position="after">
