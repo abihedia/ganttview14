@@ -29,35 +29,37 @@ class AccountMove(models.Model):
         Calculer advance.
         """
         # *********************************
-        self.advance = False
-        av_line = 0.0
-        comp_line = 0
-        av_section = 0.0
-        comp_section = 0
-        # av_note = 0.0
+        for rec in self:
 
-        for line in reversed(self.invoice_line_ids):
+            rec.advance = False
+            av_line = 0.0
+            comp_line = 0
+            av_section = 0.0
+            comp_section = 0
+            # av_note = 0.0
 
-            if line.display_type != 'line_section' and line.display_type != 'line_note':
-                # av_line += line.per_advance_product
-                av_line += line.x_studio_pourcentage_situation
-                comp_line += 1
-            if line.display_type == 'line_section':
-                if comp_line != 0:
-                    av_section += av_line / comp_line
-                    av_line -= av_line
-                    comp_line = 0
-                    comp_section += 1
+            for line in reversed(rec.invoice_line_ids):
 
-            if line.display_type == 'line_note':
-                if comp_section != 0:
-                    av_note = av_section / comp_section
-                    av_section -= av_section
-                    comp_section = 0
-                    line.write({'per_advance_note': av_note
-                                })
+                if line.display_type != 'line_section' and line.display_type != 'line_note':
+                    # av_line += line.per_advance_product
+                    av_line += line.x_studio_pourcentage_situation
+                    comp_line += 1
+                if line.display_type == 'line_section':
+                    if comp_line != 0:
+                        av_section += av_line / comp_line
+                        av_line -= av_line
+                        comp_line = 0
+                        comp_section += 1
 
-        self.advance = True
+                if line.display_type == 'line_note':
+                    if comp_section != 0:
+                        av_note = av_section / comp_section
+                        av_section -= av_section
+                        comp_section = 0
+                        line.write({'per_advance_note': av_note
+                                    })
+
+            rec.advance = True
 
 
 class AccountMoveLine(models.Model):
