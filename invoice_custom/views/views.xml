@@ -17,7 +17,7 @@
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='account_id']"
                        position="after">
                     <field name="categ_id"/>
-                    <!--                    <field name="per_advance_note" />-->
+                    <field name="per_advance" />
                 </xpath>
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='sequence']"
                        position="attributes">
