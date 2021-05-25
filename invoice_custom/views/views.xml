@@ -17,7 +17,7 @@
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='account_id']"
                        position="after">
                     <field name="categ_id"/>
-<!--                    <field name="per_advance_note" />-->
+                    <!--                    <field name="per_advance_note" />-->
                 </xpath>
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/tree/field[@name='sequence']"
                        position="attributes">
@@ -28,6 +28,36 @@
                     <label for="per_advance_note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
                     <field name="per_advance_note" attrs="{'invisible': [('display_type', '=', 'line_note')]}"/>
                 </xpath>
+            </field>
+        </record>
+
+        <!--        inherit  project tree view -->
+        <record id="view_task_tree2_inherit" model="ir.ui.view">
+            <field name="name">project.task.tree.inherit</field>
+            <field name="model">project.task</field>
+            <field eval="2" name="priority"/>
+            <field name="inherit_id" ref="project.view_task_tree2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree/field[@name='user_id']"
+                       position="after">
+                    <field name="per_advance" widget="percentage"/>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Task -->
+        <record id="view_task_form2_inherit" model="ir.ui.view">
+            <field name="name">project.task.form.inherit</field>
+            <field name="model">project.task</field>
+            <field eval="2" name="priority"/>
+            <field name="inherit_id" ref="project.view_task_form2"/>
+            <field name="arch" type="xml">
+                <xpath expr="//form/sheet/group/group/field[@name='partner_id']"
+                       position="after">
+                    <field name="per_advance" widget="percentage"/>
+                </xpath>
+
             </field>
         </record>
 
