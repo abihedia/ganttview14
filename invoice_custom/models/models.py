@@ -42,7 +42,7 @@ class AccountMove(models.Model):
 
             if line.display_type != 'line_section' and line.display_type != 'line_note':
                 # av_line += line.per_advance_product
-                av_line += line.per_advance
+                av_line += line.x_studio_poucentage_situation
                 comp_line += 1
             if line.display_type == 'line_section':
                 if comp_line != 0:
@@ -68,17 +68,17 @@ class AccountMoveLine(models.Model):
 
     per_advance_note = fields.Float(string="% note", )
     categ_id = fields.Many2one(related="product_id.categ_id")
-    project_id = fields.Many2one('project.task', string="Projet")
-    per_advance = fields.Float(related="project_id.per_advance", string="% d'avancement", )
+    # project_id = fields.Many2one('project.task', string="Projet")
+    # per_advance = fields.Float(related="project_id.per_advance", string="% d'avancement", )
 
 
-class Task(models.Model):
-    _inherit = "project.task"
-    _description = "Task"
-
-    @api.constrains('per_advance')
-    def _check_value(self):
-        if self.per_advance > 1 or self.per_advance < 0:
-            raise ValidationError(_('Avancement doit être entre 0-100.'))
-
-    per_advance = fields.Float(string="% d'avancement", copy=True, )
+# class Task(models.Model):
+#     _inherit = "project.task"
+#     _description = "Task"
+#
+#     @api.constrains('per_advance')
+#     def _check_value(self):
+#         if self.per_advance > 1 or self.per_advance < 0:
+#             raise ValidationError(_('Avancement doit être entre 0-100.'))
+#
+#     per_advance = fields.Float(string="% d'avancement", copy=True, )
