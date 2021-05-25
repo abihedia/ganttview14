@@ -41,7 +41,7 @@ class AccountMove(models.Model):
 
             if line.display_type != 'line_section' and line.display_type != 'line_note':
                 # av_line += line.per_advance_product
-                av_line += line.x_studio_poucentage_situation
+                av_line += line.x_studio_pourcentage_situation
                 comp_line += 1
             if line.display_type == 'line_section':
                 if comp_line != 0:
