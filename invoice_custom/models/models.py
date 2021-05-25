@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from appdirs import unicode
 from odoo import models, fields, api, _, tools
-from odoo.exceptions import UserError, AccessError, ValidationError, RedirectWarning
 
 
 class AccountMove(models.Model):
@@ -21,7 +20,6 @@ class AccountMove(models.Model):
         for par in sale_ids:
             amount_market += par.amount_total
 
-        self.amount_market = amount_market
         self.amount_market = amount_market
 
     # @api.depends('invoice_line_ids')
@@ -68,17 +66,3 @@ class AccountMoveLine(models.Model):
 
     per_advance_note = fields.Float(string="% note", )
     categ_id = fields.Many2one(related="product_id.categ_id")
-    # project_id = fields.Many2one('project.task', string="Projet")
-    # per_advance = fields.Float(related="project_id.per_advance", string="% d'avancement", )
-
-
-# class Task(models.Model):
-#     _inherit = "project.task"
-#     _description = "Task"
-#
-#     @api.constrains('per_advance')
-#     def _check_value(self):
-#         if self.per_advance > 1 or self.per_advance < 0:
-#             raise ValidationError(_('Avancement doit être entre 0-100.'))
-#
-#     per_advance = fields.Float(string="% d'avancement", copy=True, )
