@@ -23,12 +23,11 @@ class AccountMove(models.Model):
 
         self.amount_market = amount
 
-    @api.depends('invoice_line_ids')
+    @api.depends('invoice_line_ids.x_studio_pourcentage_situation')
     def _get_per_advance_categ(self):
         """
         Calculer advance.
         """
-
         # *********************************
         self.advance = False
         av_line = 0.0
