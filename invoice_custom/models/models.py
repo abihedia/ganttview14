@@ -40,24 +40,25 @@ class AccountMove(models.Model):
 
             for line in reversed(rec.invoice_line_ids):
 
-                if line.display_type != 'line_section' and line.display_type != 'line_note':
-                    # av_line += line.per_advance_product
-                    av_line += line.x_studio_pourcentage_situation
-                    comp_line += 1
-                if line.display_type == 'line_section':
-                    if comp_line != 0:
-                        av_section += av_line / comp_line
-                        av_line -= av_line
-                        comp_line = 0
-                        comp_section += 1
+                # if line.display_type != 'line_section' and line.display_type != 'line_note':
+                #     # av_line += line.per_advance_product
+                #     av_line += line.x_studio_pourcentage_situation
+                #     comp_line += 1
+                # if line.display_type == 'line_section':
+                #     if comp_line != 0:
+                #         av_section += av_line / comp_line
+                #         av_line -= av_line
+                #         comp_line = 0
+                #         comp_section += 1
 
                 if line.display_type == 'line_note':
-                    if comp_section != 0:
-                        av_note = av_section / comp_section
-                        av_section -= av_section
-                        comp_section = 0
-                        line.write({'per_advance_note': av_note
-                                    })
+                    line.per_advance_note = 10
+                    # if comp_section != 0:
+                    #     av_note = av_section / comp_section
+                    #     av_section -= av_section
+                    #     comp_section = 0
+                    #     line.write({'per_advance_note': av_note
+                    #                 })
 
             rec.advance = True
 
