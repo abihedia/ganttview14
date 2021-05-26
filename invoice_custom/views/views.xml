@@ -24,6 +24,8 @@
                 </xpath>
                 <xpath expr="//form/sheet/notebook/page/field[@name='invoice_line_ids']/form/sheet/field[@name='name']"
                        position="after">
+                    <label for="x_studio_pourcentage_situation" />
+                    <field name="x_studio_pourcentage_situation"/>
                     <label for="per_advance_note" attrs="{'invisible': [('display_type', '!=', 'line_note')]}"/>
                     <field name="per_advance_note" attrs="{'invisible': [('display_type', '=', 'line_note')]}"/>
                 </xpath>
