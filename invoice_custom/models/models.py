@@ -56,7 +56,7 @@ class AccountMove(models.Model):
                         av_note = av_section / comp_section
                         av_section -= av_section
                         comp_section = 0
-                        line.x_studio_pourcentage_situation = av_note
+                        line.x_studio_pourcentage_situation = av_note * 100
                         # line.write({'per_advance_note': av_note
                         #             })
 
@@ -67,5 +67,5 @@ class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
     _description = "Journal Item"
 
-    per_advance_note = fields.Float(string="% note", )
+    # per_advance_note = fields.Float(string="% note", )
     categ_id = fields.Many2one(related="product_id.categ_id")
