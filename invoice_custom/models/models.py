@@ -23,7 +23,8 @@ class AccountMove(models.Model):
 
         self.amount_market = amount_market
         self.amount_market = amount_market
- @api.depends('invoice_line_ids.x_studio_subtotal')
+        
+# @api.depends('invoice_line_ids')
     def _get_per_subtotal(self):
         """
         Calculer subtotal.
@@ -37,7 +38,7 @@ class AccountMove(models.Model):
             comp_section = 0
             # av_note = 0.0
 
-            for line in reversed(rec.invoice_line_ids):
+            for line in reversed(self.invoice_line_ids):
 
                 if line.display_type != 'line_section' and line.display_type != 'line_note':
                     # av_line += line.per_advance_product
@@ -58,6 +59,7 @@ class AccountMove(models.Model):
                         line.x_studio_subtotal = tot_note
 
             rec.subtotal = True
+            
     # @api.depends('invoice_line_ids')
     def _get_per_advance_categ(self):
         """
