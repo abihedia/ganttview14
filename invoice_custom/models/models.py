@@ -11,7 +11,7 @@ class AccountMove(models.Model):
     # ajout champs amount_market dans le modele facturation
     amount_market = fields.Monetary(string='Montant Marché', readonly=True, compute='_get_amount_market_sale')
     advance = fields.Boolean(string="% site section", compute='_get_per_advance_categ', default=False)
-
+    subtotal = fields.Boolean(string="subtotal section", compute='_get_per_subtotal', default=False)
     def _get_amount_market_sale(self):
         """
         Calculer Montant Marché par client.
@@ -23,7 +23,41 @@ class AccountMove(models.Model):
 
         self.amount_market = amount_market
         self.amount_market = amount_market
+ @api.depends('invoice_line_ids.x_studio_subtotal')
+    def _get_per_subtotal(self):
+        """
+        Calculer subtotal.
+        """
+        # *********************************
+        for rec in self:
+            subtotal = False
+            tot_line = 0.0
+            comp_line = 0
+            tot_section = 0.0
+            comp_section = 0
+            # av_note = 0.0
 
+            for line in reversed(rec.invoice_line_ids):
+
+                if line.display_type != 'line_section' and line.display_type != 'line_note':
+                    # av_line += line.per_advance_product
+                    tot_line += line.x_studio_subtotal
+                    comp_line += 1
+                if line.display_type == 'line_section':
+                    if comp_line != 0:
+                        tot_section += tot_line
+                        tot_line -= tot_line
+                        comp_line = 0
+                        comp_section += 1
+
+                if line.display_type == 'line_note':
+                    if comp_section != 0:
+                        tot_note = tot_section
+                        tot_section -= tot_section
+                        comp_section = 0
+                        line.x_studio_subtotal = tot_note
+
+            rec.subtotal = True
     # @api.depends('invoice_line_ids')
     def _get_per_advance_categ(self):
         """
